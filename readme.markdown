@@ -3,10 +3,7 @@
 Scrapah
 ===
 
-!WARNING
-A gem in extreme beta.
-Unusable, and not even a gem yet...
-WARNING!
+Note: Gem is not Published yet. Still needs some tests.
 
 A ruby gem for web scraping.
 It converts a hash of full of regex, css, xpath, and Proc's into results.

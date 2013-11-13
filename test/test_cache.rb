@@ -6,10 +6,10 @@ require 'test/unit'
 require_relative '../lib/scrapah/cache.rb'
 
 
-class ScrapahUnitTests < Test::Unit::TestCase
+class TestCache < Test::Unit::TestCase
 
 
-	def test_cache()
+	def test_new()
 		c = Cache.new
 		assert(c.instance_of? Cache)
 
