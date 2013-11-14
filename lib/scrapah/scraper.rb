@@ -59,8 +59,8 @@ class Scraper
 		end
 	end
 
-	
-	def process!(input)
+	# TODO split process! and process ....
+	def process(input)
 		# get current_url source
 		doc = get(@current_url)
 		
@@ -83,12 +83,21 @@ class Scraper
 		end
 
 		def get_headless(url)
+			return nil if !started_headless?
+			
 			@browser.goto url
 			Nokogiri::HTML(@browser.html)
 		end
 
 		def get_openuri(url)
 			Nokogiri::HTML(open(url))
+		end
+
+
+		def started_headless?()
+			if @browser.nil? || @headless.nil? 
+				raise 'Call Scraper.start first when using :headless' 
+			end
 		end
 
 

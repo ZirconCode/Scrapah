@@ -4,7 +4,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "scrapah/version"
 
 Gem::Specification.new do |s|
-  s.name        = "scrapah"
+  s.name        = "Scrapah"
   s.version     = Mygem::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Simon Gruening"]
