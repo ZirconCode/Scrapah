@@ -1,63 +1,68 @@
 
 
-class Cache
+require 'json'
 
-	# TODO: 'throws away' whole cache after timeout, 
-	# 	    -> treat entries as seperate objects/files/dates
+module Scrapah
 
-	@@cache_dir = 'cache/'
+	class Cache
 
-	def initialize()
-		Dir.mkdir(@@cache_dir) unless File.exists?(@@cache_dir)
-		@Cache = Hash.new
-		@keep_time = 1*24*60 # in minutes
-	end
+		# TODO: 'throws away' whole cache after timeout, 
+		# 	    -> treat entries as seperate objects/files/dates
 
-	def store(key,content)
-		@Cache[key] = content
-	end
+		@@cache_dir = 'cache/'
 
-	def get(key)
-		@Cache[key]
-	end
-
-	def has_key?(key)
-		@Cache.has_key? key
-	end
-
-	def clear()
-		@Cache = Hash.new
-	end
-
-	def save
-		# WARNING: Symbols converted to Strings
-		f = File.new(@@cache_dir+Time.now.to_i.to_s,'w')
-		JSON.dump(@Cache,f)
-	end
-
-
-	def load
-		f = get_newest_acceptable
-		@Cache = Hash.new
-		@Cache = JSON.load(f) unless f.nil?
-	end
-
-	def get_hash
-		@Cache
-	end
-
-	private
-
-		def get_newest_acceptable()
-			prev = Dir.glob(@@cache_dir+'*')
-			if(!prev.empty?)
-				prev.map!{|f| f.delete(@@cache_dir).to_i}
-				prev.sort!
-				return File.new(@@cache_dir+prev.last.to_s) if(Time.now.to_i-prev.last < @keep_time*60)
-			end
-
-			nil
+		def initialize()
+			Dir.mkdir(@@cache_dir) unless File.exists?(@@cache_dir)
+			@Cache = Hash.new
+			@keep_time = 1*24*60 # in minutes
 		end
 
-end
+		def store(key,content)
+			@Cache[key] = content
+		end
 
+		def get(key)
+			@Cache[key]
+		end
+
+		def has_key?(key)
+			@Cache.has_key? key
+		end
+
+		def clear()
+			@Cache = Hash.new
+		end
+
+		def save
+			# WARNING: Symbols converted to Strings
+			f = File.new(@@cache_dir+Time.now.to_i.to_s,'w')
+			JSON.dump(@Cache,f)
+		end
+
+
+		def load
+			f = get_newest_acceptable
+			@Cache = Hash.new
+			@Cache = JSON.load(f) unless f.nil?
+		end
+
+		def get_hash
+			@Cache
+		end
+
+		private
+
+			def get_newest_acceptable()
+				prev = Dir.glob(@@cache_dir+'*')
+				if(!prev.empty?)
+					prev.map!{|f| f.delete(@@cache_dir).to_i}
+					prev.sort!
+					return File.new(@@cache_dir+prev.last.to_s) if(Time.now.to_i-prev.last < @keep_time*60)
+				end
+
+				nil
+			end
+
+	end
+
+end
