@@ -3,7 +3,9 @@ class Scraper
 
 	# TODO needs full url for caching to work atm
 
-	def initialize(scrape_type=:headless)
+	# TODO make caching optional!
+
+	def initialize(scrape_type=:openuri)
 		@access_type = scrape_type
 		@cache = Cache.new
 		@cache.load

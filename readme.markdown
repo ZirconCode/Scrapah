@@ -3,10 +3,11 @@
 Scrapah
 ===
 
-Note: Gem is not Published yet. Still needs some tests.
+Note: Gem is not Published yet, because it's a mess atm =/
 
 A ruby gem for web scraping.
 It converts a hash of full of regex, css, xpath, and Proc's into results.
+Can even extract e-mails.
 
 Contributors
 ---
