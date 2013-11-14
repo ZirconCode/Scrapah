@@ -3,13 +3,15 @@ class Scraper
 
 	# TODO needs full url for caching to work atm
 
-	# TODO make caching optional!
-
-	def initialize(scrape_type=:openuri)
+	def initialize(scrape_type=:openuri, caching=false)
 		@access_type = scrape_type
-		@cache = Cache.new
-		@cache.load
 		@current_url = ''
+
+		@caching = caching
+		if cache
+			@cache = Cache.new
+			@cache.load
+		end
 	end
 	
 
@@ -30,65 +32,101 @@ class Scraper
 		end
 	end
 	
-	
-	def go(url)
-		# visit and cache the url
+
+	def visit(url)
+		# cache the url
+
 		@current_url = url
-		if(@access_type == :headless)
-			@browser.goto url
-			doc = Nokogiri::HTML(@browser.html)
-		elsif (@access_type == :openuri)
-			doc = Nokogiri::HTML(open(url))
-		end
+
+		return nil if !@caching
+		
+		doc = get_appropriate(url)
+
 		@cache.store(url,doc.to_s)
-		@cache.save
+		@cache.save #TODO ???
 	end
 	
 	def get(url)
-		# go(url) if not exists in cache
+		# visit(url) if caching and not cached
 		# return result
 		@current_url = url
-		go(url) if !@cache.has_key? url
-		Nokogiri::HTML(@cache.get(url))
+
+		if(@caching)
+			go(url) if !@cache.has_key? url
+			Nokogiri::HTML(@cache.get(url))
+		else
+			get_appropriate(url)
+		end
 	end
+
 	
-	
-	def process(hash)
+	def process!(input)
 		# get current_url source
 		doc = get(@current_url)
-		# fill in hash
-		# replace regex with results
-		# replace code with results
-		# accept css and xpath?
-		# clean results & return them
-		hash.each do |k,v| 
-
-			if(v.is_a? Regexp)
-				hash[k] = doc.to_s.scan(v).flatten
-			end
-
-			if(v.is_a?(String) && v.start_with?("x|"))
-				v.delete!('x|')
-				hash[k] = sanitize_nokogiri doc.xpath(v)
-			elsif(v.is_a?(String) && v.start_with?("c|"))
-				v.delete!('c|')
-				hash[k] = sanitize_nokogiri doc.css(v)
-			end
-				
-			# code...? how~
-			if(v.is_a? Proc)
-				hash[k] = v.call(doc)
-			end
+		
+		if input.is_a?(Hash)
+			input.each{|k,v| input[k] = process_appropriate(doc,v)}
+		else
+			input = process_appropriate(doc,input)
 		end
 
-		hash
+		input
 	end
+
 
 	private
 
-		def sanitize_nokogiri(stuff)
-			
+		# returns nokogiri doc's
+		def get_appropriate(url)
+			return get_headless(url) if(@access_type == :headless)
+			return get_openuri(url)  if(@access_type == :openuri)
+		end
 
+		def get_headless(url)
+			@browser.goto url
+			Nokogiri::HTML(@browser.html)
+		end
+
+		def get_openuri(url)
+			Nokogiri::HTML(open(url))
+		end
+
+
+		# accepts nokogiri doc's only atm
+		def process_appropriate(doc,cmd)
+			
+			return process_regex(doc,cmd) if(cmd.is_a? Regexp)
+			return process_proc(doc,cmd) if(cmd.is_a? Proc)
+
+			if cmd.is_a?(String)
+				return process_xpath(doc,cmd) if cmd.start_with?("x|")
+				return process_css(doc,css) if cmd.start_with?("c|")
+			end
+			
+			nil
+
+		end
+
+		def process_regex(doc,regex)
+			doc.to_s.scan(regex).flatten
+		end
+
+		def process_xpath(doc,xpath)
+			xpath.delete!('x|')
+			sanitize_nokogiri doc.xpath(xpath)
+		end
+
+		def process_css(doc,css)
+			css.delete!('c|')
+			sanitize_nokogiri doc.css(css)
+		end
+
+		def process_proc(doc,proc)
+			proc.call(doc)
+		end
+
+
+		def sanitize_nokogiri(stuff)
 			return stuff.to_s if(stuff.count == 1)
 
 			result = []

@@ -8,47 +8,43 @@ require_relative '../lib/scrapah/cache.rb'
 
 class TestCache < Test::Unit::TestCase
 
+	def setup
+		@c = Cache.new
+	end
+
 
 	def test_new()
-		c = Cache.new
-		assert(c.instance_of? Cache)
-
-		assert_raise ArgumentError do 
-			Cache.new 'one too many'
-		end
+		
+		assert(@c.instance_of? Cache)	
 	end
 
 	def test_store_and_get
-		c = Cache.new
-		c.store("test",3)
-		assert(c.get("test") == 3)
+		@c.store("test",3)
+		assert(@c.get("test") == 3)
 
-		assert(c.get("doesn't exist").nil?)
+		assert(@c.get("doesn't exist").nil?)
 	end
 
 	def test_has_key()
-		c = Cache.new
-		c.store("test",3)
-		assert(c.has_key? "test")
-		assert(!c.has_key?("nope"))
+		@c.store("test",3)
+		assert(@c.has_key? "test")
+		assert(!@c.has_key?("nope"))
 	end
 
 	def test_clear()
-		c = Cache.new
-		c.store("test",3)
+		@c.store("test",3)
 
-		assert(c.get("test")==3)
-		c.clear
-		assert(c.get("test").nil?)
+		assert(@c.get("test")==3)
+		@c.clear
+		assert(@c.get("test").nil?)
 	end
 
 	def test_save_and_load()
-		c = Cache.new
-		c.store("old",1)
-		c.save
-		c.clear
-		c.load
-		assert(c.get("old")==1)
+		@c.store("old",1)
+		@c.save
+		@c.clear
+		@c.load
+		assert(@c.get("old")==1)
 		# TODO fix requires and figure out the correct way to do them
 	end
 

@@ -13,7 +13,7 @@ module Extract
 	
 		emails = []
 		emails << content.scan(r)
-		emails.flatten!
+		emails.uniq!.flatten!
 
 		emails
 
