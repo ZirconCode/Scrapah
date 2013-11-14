@@ -4,7 +4,7 @@ module Extract
 
 	# Not Perfect, but Good
 	# TODO, make case insensitive and remove one set?
-	def emails(content)
+	def self.emails(content)
 
 		# deals with nokogiri and misc
 		content = content.to_s if content.respond_to?(:to_s) && !content.is_a? String

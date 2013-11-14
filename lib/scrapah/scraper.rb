@@ -12,6 +12,8 @@ class Scraper
 			@cache = Cache.new
 			@cache.load
 		end
+
+		# .start automatically if needed?
 	end
 	
 

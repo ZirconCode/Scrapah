@@ -4,8 +4,8 @@
 # / ZirconCode
 
 
-# TODO Make requires run-time? 
-# why require headless and stuff when not needed?
+# TODO Sigh~~~
+
 
 require 'nokogiri'
 require 'open-uri'
