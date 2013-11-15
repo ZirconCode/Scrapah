@@ -1,13 +1,19 @@
 
-# TODO optional require?
+
 require 'nokogiri'
+require 'retryable'
+
+# TODO optional requires?
 require 'open-uri'
 require 'watir-webdriver'
 require 'headless' # needs xvfb installed
 
+
 module Scrapah
 
 	class Scraper
+
+		include Retryable
 
 		# TODO needs full url for caching to work properly atm
 
@@ -91,8 +97,10 @@ module Scrapah
 			# TODO retry & retry strategies
 			# returns nokogiri doc's
 			def get_appropriate(url)
-				return get_headless(url) if(@access_type == :headless)
-				return get_openuri(url)  if(@access_type == :openuri)
+				retryable :times => 4, :sleep => 1.5 do
+					return get_headless(url) if(@access_type == :headless)
+					return get_openuri(url)  if(@access_type == :openuri)
+				end
 			end
 
 			def get_headless(url)
