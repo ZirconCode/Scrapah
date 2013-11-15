@@ -9,7 +9,9 @@ module Scrapah
 
 	class Scraper
 
-		# TODO needs full url for caching to work atm
+		# TODO needs full url for caching to work properly atm
+
+		# TODO Patterns class, for recursive-autodiscovery etc... ?
 
 		def initialize(scrape_type=:openuri, caching=false)
 			@access_type = scrape_type
@@ -86,6 +88,7 @@ module Scrapah
 
 		private
 
+			# TODO retry & retry strategies
 			# returns nokogiri doc's
 			def get_appropriate(url)
 				return get_headless(url) if(@access_type == :headless)
