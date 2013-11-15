@@ -3,19 +3,18 @@
 # Test cache.rb
 
 require 'test/unit'
-require_relative '../lib/scrapah/cache.rb'
+require '../lib/scrapah/cache'
 
 
 class TestCache < Test::Unit::TestCase
 
 	def setup
-		@c = Cache.new
+		@c = Scrapah::Cache.new
 	end
 
 
 	def test_new()
-		
-		assert(@c.instance_of? Cache)	
+		assert(@c.instance_of? Scrapah::Cache)	
 	end
 
 	def test_store_and_get
@@ -45,37 +44,8 @@ class TestCache < Test::Unit::TestCase
 		@c.clear
 		@c.load
 		assert(@c.get("old")==1)
-		# TODO fix requires and figure out the correct way to do them
 	end
 
 end
-
-
-
-# TODO Refactor... haha
-def temporary_test
-	s = Scraper.new :openuri
-	s.start
-
-	s.get('https://news.ycombinator.com/item?id=6709901') #random...
-
-	results = Hash.new
-	results[:name] = 'regex, or ruby code here.... hmm'
-	results[:bleh] = /(...research...)/
-	results[:code] = Proc.new{|d| d.css('a').count}
-	results[:test] = Proc.new{|d| d.xpath("//span[@class='pagetop']/b").to_s}
-	results[:tes2] = /\"user\?id=(.*?)\"/
-	results[:tes3] = /noexisttest/
-	results[:tes4] = "x|//span[@class='pagetop']/b"
-	results[:tes5] = "x|//span[@class='pagetop']/a"
-	results[:tes6] = "c|form"
-
-	p s.process(results)
-
-	s.stop
-
-	puts 'finished'
-end
-
 
 

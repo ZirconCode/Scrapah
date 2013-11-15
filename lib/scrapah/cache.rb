@@ -37,6 +37,7 @@ module Scrapah
 			# WARNING: Symbols converted to Strings
 			f = File.new(@@cache_dir+Time.now.to_i.to_s,'w')
 			JSON.dump(@Cache,f)
+			f.close
 		end
 
 
@@ -44,6 +45,9 @@ module Scrapah
 			f = get_newest_acceptable
 			@Cache = Hash.new
 			@Cache = JSON.load(f) unless f.nil?
+			f.close
+
+			@Cache
 		end
 
 		def get_hash
@@ -57,7 +61,7 @@ module Scrapah
 				if(!prev.empty?)
 					prev.map!{|f| f.delete(@@cache_dir).to_i}
 					prev.sort!
-					return File.new(@@cache_dir+prev.last.to_s) if(Time.now.to_i-prev.last < @keep_time*60)
+					return File.new(@@cache_dir+prev.last.to_s,"r") if(Time.now.to_i-prev.last < @keep_time*60)
 				end
 
 				nil
