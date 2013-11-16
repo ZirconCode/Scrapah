@@ -25,7 +25,7 @@ module Scrapah
 
 			@caching = caching
 			if @caching
-				@cache = Cache.new
+				@cache = Scrapah::Cache.new
 				@cache.load
 			end
 
