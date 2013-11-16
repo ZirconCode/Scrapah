@@ -17,7 +17,7 @@ module Scrapah
 
 		# TODO needs full url for caching to work properly atm
 
-		# TODO Patterns class, for recursive-autodiscovery etc... ?
+		# TODO Patterns class, for recursive-autodiscovery proxy-switching etc... ?
 
 		def initialize(scrape_type=:openuri, caching=false)
 			@access_type = scrape_type
@@ -29,7 +29,7 @@ module Scrapah
 				@cache.load
 			end
 
-			# .start automatically if needed?
+			# .start automatically?
 		end
 		
 
@@ -83,12 +83,14 @@ module Scrapah
 			doc = get(@current_url)
 			
 			if input.is_a?(Hash)
-				input.each{|k,v| input[k] = process_appropriate(doc,v)}
+				result = Hash.new
+				input.each{|k,v| result[k] = process_appropriate(doc,v)}
+				return result
 			else
-				input = process_appropriate(doc,input)
+				return process_appropriate(doc,input)
 			end
 
-			input
+			nil
 		end
 
 
@@ -118,7 +120,9 @@ module Scrapah
 			def started_headless?()
 				if @browser.nil? || @headless.nil? 
 					raise 'Call Scraper.start first when using :headless' 
+					return false
 				end
+				return true
 			end
 
 
@@ -130,7 +134,7 @@ module Scrapah
 
 				if cmd.is_a?(String)
 					return process_xpath(doc,cmd) if cmd.start_with?("x|")
-					return process_css(doc,css) if cmd.start_with?("c|")
+					return process_css(doc,cmd) if cmd.start_with?("c|")
 				end
 				
 				nil
