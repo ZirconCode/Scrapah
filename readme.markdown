@@ -3,20 +3,19 @@
 Scrapah
 ===
 
-Note: Gem is not Published yet, because it's a mess atm =/
+Note: Gem is not Published yet, being polished atm
 
-A ruby gem for web scraping.
-It converts a hash of full of regex, css, xpath, and Proc's into results.
-Can even extract e-mails.
+Scrapah is a ruby gem for web scraping and flexible content extraction. Scrapah takes your Hashes, regex, xpath's, css, and even Proc's, and turns them into neat results. Scrapah is heavily based on Nokogiri.
 
-Contributors
----
-ZirconCode - Simon Gruening
-
-Example Use
+Installation
 ---
 
-	s = Scraper.new :openuri
+	n/a
+
+Using Scrapah
+---
+
+	s = Scrapah::Scraper.new :openuri
 	s.start
 
 	s.get('https://news.ycombinator.com/item?id=6709901') #random...
@@ -36,3 +35,11 @@ Example Use
 
 	s.stop
 
+
+Todo
+---
+
+* !improve the caching
+* Optional Requires (ex. watir-webdriver for some)
+* proxy support
+* recursive-autodiscovery, proxy-switching, and other 'patterns'
