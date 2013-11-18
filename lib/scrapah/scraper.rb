@@ -1,6 +1,7 @@
 
 
 require 'nokogiri'
+
 require 'retryable'
 
 # TODO optional requires?
@@ -99,7 +100,7 @@ module Scrapah
 			# TODO retry & retry strategies
 			# returns nokogiri doc's
 			def get_appropriate(url)
-				retryable :times => 4, :sleep => 1.5 do
+				retryable :tries => 4, :sleep => 1.5 do
 					return get_headless(url) if(@access_type == :headless)
 					return get_openuri(url)  if(@access_type == :openuri)
 				end
