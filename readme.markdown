@@ -18,33 +18,40 @@ Installation
 Using Scrapah
 ---
 
+Start a Scraper
+
 	require 'scrapah'
 
 	# use :headless to use a browser in background
 	s = Scrapah::Scraper.new :openuri 
 	s.start
 
-	# Tell Scrapah where to go
+Tell Scrapah where to go
+
 	s.visit 'https://github.com/ZirconCode'
 
-	# You can pass in a regex
+You can pass in a regex
+
 	# ex. get my total contributions on github
 	p s.process /\b(\d*?) Total\b/
 
-	# Scrapah will treat a string beginning with 'c|' as a CSS selector
+Scrapah will treat a string beginning with 'c|' as a CSS selector
+
 	# ex. get the title tag off a page
 	p s.process 'c|h1'
 
-	# Scrapah will treat a string beginning with 'x|' as an XPath
+Scrapah will treat a string beginning with 'x|' as an XPath
+
 	# ex. get my popular repositories
 	p s.process 'x|//span[@class="repo"]/text()'
 
-	# Scrapah will even take your Proc's
+Scrapah will even take your Proc's
+
 	# ex. Extract all emails from a website
 	p s.process Proc.new{|nokogiri_doc| Scrapah::Extract.emails nokogiri_doc}
 
-	# The Magic
-	# Pass in a Hash of stuff, get results
+The Magic
+Pass in a Hash of stuff, get results
 
 	s.visit 'https://github.com/ZirconCode'
 
@@ -57,7 +64,8 @@ Using Scrapah
 
 	p s.process(profile) # ^_^
 
-	# Don't forget to stop Scrapah at the end =)
+Don't forget to stop Scrapah at the end =)
+
 	s.stop
 
 
