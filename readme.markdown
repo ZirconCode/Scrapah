@@ -3,6 +3,8 @@
 Scrapah
 ===
 
+[![Gem Version](https://badge.fury.io/rb/Scrapah.png)](http://badge.fury.io/rb/Scrapah)
+
 Scrapah is a ruby gem for web scraping and flexible content extraction. Scrapah takes your Hashes, regex, xpath's, css, and even Proc's, and turns them into neat results. Scrapah is heavily based on Nokogiri.
 
 Installation
