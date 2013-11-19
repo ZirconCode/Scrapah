@@ -71,10 +71,14 @@ Don't forget to stop Scrapah at the end =)
 Development
 ---
 
+	# setup
     git clone https://github.com/ZirconCode/Scrapah.git
     cd Scrapah
-
     bundle install
+
+    # testing
+    cd test/
+    ruby test_all.rb
 
     # to install gem locally
     rake install
