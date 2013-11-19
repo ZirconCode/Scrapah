@@ -147,12 +147,12 @@ module Scrapah
 			end
 
 			def process_xpath(doc,xpath)
-				xpath.delete!('x|')
+				xpath.slice!('x|')
 				sanitize_nokogiri doc.xpath(xpath)
 			end
 
 			def process_css(doc,css)
-				css.delete!('c|')
+				css.slice!('c|')
 				sanitize_nokogiri doc.css(css)
 			end
 
