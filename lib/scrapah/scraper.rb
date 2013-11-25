@@ -20,11 +20,11 @@ module Scrapah
 
 		# TODO Patterns class, for recursive-autodiscovery proxy-switching etc... ?
 
-		def initialize(scrape_type=:openuri, caching=false)
-			@access_type = scrape_type
+		def initialize(opts=[])
+			@access_type = opts[:type] || :openuri
 			@current_url = ''
 
-			@caching = caching
+			@caching = opts[:caching] || false
 			if @caching
 				@cache = Scrapah::Cache.new
 				@cache.load

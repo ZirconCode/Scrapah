@@ -20,13 +20,13 @@ class TestScraper < Test::Unit::TestCase
 		s = nil
 
 		assert_nothing_raised do
-			s = Scrapah::Scraper.new :openuri
+			s = Scrapah::Scraper.new :type => :openuri
 		end
 		assert(s.is_a? Scrapah::Scraper)
 	end
 
 	def test_get_openuri
-		s = Scrapah::Scraper.new :openuri
+		s = Scrapah::Scraper.new :type => :openuri
 		f = @fixture_profile
 
 		assert(s.get(f).to_s.include? 'Sed ut perspiciatis unde omnis')
@@ -36,14 +36,14 @@ class TestScraper < Test::Unit::TestCase
 		s = nil
 
 		assert_nothing_raised do
-			s = Scrapah::Scraper.new :headless
+			s = Scrapah::Scraper.new :type => :headless
 		end
 		assert(s.is_a? Scrapah::Scraper)
 	end
 
 	# heavy test
 	def test_start_stop_headless
-		s = Scrapah::Scraper.new :headless
+		s = Scrapah::Scraper.new :type => :headless
 
 		assert_nothing_raised do
 			s.start
@@ -53,7 +53,7 @@ class TestScraper < Test::Unit::TestCase
 
 	# heavy test
 	def test_get_headless
-		s = Scrapah::Scraper.new :headless
+		s = Scrapah::Scraper.new :type => :headless
 		f = 'file://'+@fixture_profile
 
 		s.start
@@ -65,7 +65,7 @@ class TestScraper < Test::Unit::TestCase
 
 	# heavy test
 	def test_get_no_start_headless
-		s = Scrapah::Scraper.new :headless
+		s = Scrapah::Scraper.new :type => :headless
 
 		assert_raise RuntimeError do
 			s.get('blah')
@@ -74,7 +74,7 @@ class TestScraper < Test::Unit::TestCase
 
 	# Full Use Test
 	def test_process
-		s = Scrapah::Scraper.new :openuri
+		s = Scrapah::Scraper.new :type => :openuri
 		f = @fixture_profile
 
 		s.visit(f)
