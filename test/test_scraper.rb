@@ -7,6 +7,12 @@ require 'test/unit'
 require '../lib/scrapah/scraper'
 require '../lib/scrapah/extract' # for test_process
 
+# !TODO
+#require '../lib/scrapah'
+require '../lib/scrapah/gateway'
+require '../lib/scrapah/gateway_openuri'
+require '../lib/scrapah/gateway_webdriver'
+
 
 class TestScraper < Test::Unit::TestCase
 
@@ -20,13 +26,13 @@ class TestScraper < Test::Unit::TestCase
 		s = nil
 
 		assert_nothing_raised do
-			s = Scrapah::Scraper.new :type => :openuri
+			s = Scrapah::Scraper.new :gateway => Scrapah::Gateway.create('openuri')
 		end
 		assert(s.is_a? Scrapah::Scraper)
 	end
 
 	def test_get_openuri
-		s = Scrapah::Scraper.new :type => :openuri
+		s = Scrapah::Scraper.new #:gateway => Scrapah::Gateway.create('openuri')
 		f = @fixture_profile
 
 		assert(s.get(f).to_s.include? 'Sed ut perspiciatis unde omnis')
@@ -36,14 +42,14 @@ class TestScraper < Test::Unit::TestCase
 		s = nil
 
 		assert_nothing_raised do
-			s = Scrapah::Scraper.new :type => :headless
+			s = Scrapah::Scraper.new :gateway => Scrapah::Gateway.create('webdriver')
 		end
 		assert(s.is_a? Scrapah::Scraper)
 	end
 
 	# heavy test
 	def test_start_stop_headless
-		s = Scrapah::Scraper.new :type => :headless
+		s = Scrapah::Scraper.new :gateway => Scrapah::Gateway.create('webdriver')
 
 		assert_nothing_raised do
 			s.start
@@ -53,7 +59,7 @@ class TestScraper < Test::Unit::TestCase
 
 	# heavy test
 	def test_get_headless
-		s = Scrapah::Scraper.new :type => :headless
+		s = Scrapah::Scraper.new :gateway => Scrapah::Gateway.create('webdriver')
 		f = 'file://'+@fixture_profile
 
 		s.start
@@ -63,18 +69,9 @@ class TestScraper < Test::Unit::TestCase
 		s.stop
 	end
 
-	# heavy test
-	def test_get_no_start_headless
-		s = Scrapah::Scraper.new :type => :headless
-
-		assert_raise RuntimeError do
-			s.get('blah')
-		end
-	end
-
 	# Full Use Test
 	def test_process
-		s = Scrapah::Scraper.new :type => :openuri
+		s = Scrapah::Scraper.new :gateway => Scrapah::Gateway.create('openuri')
 		f = @fixture_profile
 
 		s.visit(f)
