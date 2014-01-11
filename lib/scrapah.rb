@@ -12,7 +12,10 @@ module Scrapah
 	require 'scrapah/extract.rb'
 
 	require 'scrapah/gateway.rb'
-	# TODO require other gateways...
+	require 'scrapah/gateway_openuri.rb'
+	require 'scrapah/gateway_webdriver.rb'
+	require 'scrapah/gateway_command.rb'
+	# TODO fix gateway structure...
 
 end
 

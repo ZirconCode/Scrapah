@@ -12,6 +12,7 @@ require '../lib/scrapah/extract' # for test_process
 require '../lib/scrapah/gateway'
 require '../lib/scrapah/gateway_openuri'
 require '../lib/scrapah/gateway_webdriver'
+require '../lib/scrapah/gateway_command'
 
 
 class TestScraper < Test::Unit::TestCase
