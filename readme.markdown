@@ -85,7 +85,7 @@ Development
     # to install gem locally
     rake install
 
-  # Read the ToDo.txt
-	# Pull requests are welcome =)
+  	# Read the ToDo.txt
+		# Pull requests are welcome =)
 
 
