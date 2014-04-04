@@ -85,13 +85,7 @@ Development
     # to install gem locally
     rake install
 
+  # Read the ToDo.txt
 	# Pull requests are welcome =)
 
 
-Todo
----
-
-* !improve the caching
-* Optional Requires (ex. watir-webdriver for some)
-* proxy support
-* recursive-autodiscovery, proxy-switching, and other 'patterns'

@@ -1,0 +1,245 @@
+
+!!! Needs a Restructuring (create framework)
+- ! improve the caching
+- Optional Requires (ex. watir-webdriver for some)
+- proxy support
+- recursive-autodiscovery, proxy-switching, and other 'patterns'
+
+
+Some of my more useful Code to Integrate:
+-----------------------------------------------------------------
+
+
+require 'nokogiri'
+require 'open-uri'
+require 'open_uri_redirections' # allow https redirects
+require 'uri'
+require 'json'
+require 'ruby-progressbar'
+require 'thread'
+
+def getNokogiriFromURL(url)
+	tries = 0
+	begin
+		return Nokogiri::HTML(open(url))
+	rescue => e
+		tries += 1
+		retry unless tries > 5
+
+		puts "Failed Open: "+url if url != nil
+		puts e
+		return Nokogiri::HTML("") #make rest fail silently...
+	end
+end
+
+def downcaseNokogiri(nokodoc)
+	nokodoc = Nokogiri::HTML(nokodoc.to_s.downcase) #meh...
+end
+
+def makeAbsolute(base,relative)
+	URI.join(URI.escape(base.to_s),URI.escape(relative.to_s)).to_s #foreign characters / objects...
+end
+
+def makeLinksAbsolute(base, relatives)
+	result = relatives.map {|r| makeAbsolute(base,r) }
+	result
+end
+
+def flaCompUniqArray!(array)
+	array.flatten!
+	array.compact!
+	array.uniq!
+end
+
+def extractEmailsFromURL(url)
+	doc = getNokogiriFromURL(url)
+	result = []
+
+	# mailto: links
+	result << doc.xpath('//a[starts-with(@href, \'mailto:\')]/@href')
+	flaCompUniqArray!(result)
+	result.map!{|r| r.to_s.gsub('mailto:','')}
+
+	# plaintext
+	r = Regexp.new(/\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})\b/)
+	c = doc.to_s
+	c.encode!('UTF-8', 'UTF-8', :invalid => :replace) # .scan(r) whines about 'invalid byte sequence in UTF-8'
+	result << c.scan(r)
+	flaCompUniqArray!(result)
+
+	# -
+	
+	# TODO sanitize, ex. remove ?subject...
+	return result
+end
+
+
+def extractEmailsFromWebsite(url)
+	
+	result = []
+	checkSites = []
+	
+	# try contact/about pages
+	doc = getNokogiriFromURL(url)
+
+	# Upper Case?
+	keywords = ['contact','about','email']
+	keywords.each do |k|
+		cases = [k,k.capitalize,k.upcase] # no better way?
+		cases.each do |c|
+			checkSites << doc.xpath('//a[contains(text(), \''+c+'\')]/@href').to_a
+			checkSites << doc.xpath('//a[contains(@href, \''+c+'\')]/@href').to_a
+		end
+	end
+
+	flaCompUniqArray!(checkSites)
+	checkSites.map!{ |e| makeAbsolute(url, e) }
+	checkSites << url
+
+	checkSites.each {|u| result << extractEmailsFromURL(u)}
+	flaCompUniqArray!(result)
+
+	return result
+end
+
+def getLinkByName(name, url) 
+	#ask for doc instead? faster... or implement caching in getURL()
+	doc = getNokogiriFromURL(url)
+	result = doc.xpath('//a[text() = \''+name+'\']/@href').to_a.first
+end
+
+def getLinksByName(names, url)
+	names.map {|n| getLinkByName(n)}
+end
+
+def getRedirectResult(url)
+	tries = 0
+	begin
+		page = open(url, :allow_redirections => :all) # 'open_uri_redirections'
+		return page.base_uri.to_s
+	rescue => e
+		tries += 1
+		retry unless tries > 5
+
+		puts "Failed Redirect: "+url 
+		puts e
+		return nil
+	end	
+end
+
+# - IO (only designed for hashes/arrays)
+
+def saveJSON(path,object)
+	File.open(path,"w") do |f|
+  		f << object.to_json
+	end
+end
+
+
+def loadJSON(path)
+	JSON.load(File.open(path,"r"))
+end
+
+
+# Abstraction...
+def getLinksByXpath(xpath,url)
+	# xpath should end with /@href
+	doc = getNokogiriFromURL(url)
+	result = doc.xpath(xpath).to_a
+
+	flaCompUniqArray!(result) 
+	makeLinksAbsolute(url,result)
+end
+
+def scrapeSitesForXpath(xpath,url_array,show_progress)
+	result = []
+	bar = ProgressBar.create(:total => url_array.count) if(show_progress)
+	url_array.each do |l|
+		 result << getLinksByXpath(xpath,l)
+		 bar.increment if(show_progress)
+	end
+	flaCompUniqArray!(result)
+	bar.finish if(show_progress)
+	result
+end
+
+# class Task
+# 	def new(information,procedure)
+# 		info = information
+# 		proc = procedure
+# 	end
+
+# 	def do
+# 		proc.call(info)
+# 	end
+# end
+
+
+# Some code from a multithreading script of mine
+# Abstract Therapists into Task
+# Abstract Progress Bar Away? Optional?
+def performTasks()
+	# multithreading
+	thread_count = 100
+	semaphore = Mutex.new
+	running = true
+	threads = []
+
+
+	# load tasks - progress
+	todo_therapists = loadJSON('therapists.json')
+	done_therapists = []
+	done_therapists = loadJSON('therapists_done.json') if File.file?('therapists_done.json')
+	puts todo_therapists.count.to_s+' Total'
+	todo_therapists = todo_therapists - done_therapists
+	puts done_therapists.count.to_s+' Done'
+	puts todo_therapists.count.to_s+' To Go'
+	bar = ProgressBar.create(:title => ":: ", :format => '&_ %c/%C [%b>>%i] %P%% :%e', :smoothing=>0.5, :starting_at => done_therapists.count, :total => done_therapists.count+todo_therapists.count)
+
+	# load current info
+	therapists = []
+	therapists = loadJSON('therapists_info.json') if File.file?('therapists_info.json')
+
+	# start thread monster
+	thread_count.times do
+		threads << Thread.new {
+			while(running & !todo_therapists.empty?) do
+				# pick a task
+				url = ""
+				semaphore.synchronize {
+					url = todo_therapists.pop
+				}
+				# do magic
+				info = getTherapistInfo(url)
+				# sync/report to rest
+				semaphore.synchronize {
+					done_therapists << url
+					therapists << info
+
+					saveJSON('therapists_done.json',done_therapists)
+					saveJSON('therapists_info.json',therapists)
+
+					bar.increment
+				}
+			end
+		}
+	end
+
+	## Original Linear Code
+	#todo_therapists.each do |url|
+	# therapists << getTherapistInfo(url)
+	# done_therapists << url
+	# saveJSON('therapists_done.json',done_therapists)
+	# saveJSON('therapists_info.json',therapists)
+	# #puts '-> '+done_therapists.count.to_s+'/'+todo_therapists.count.to_s
+	# bar.increment
+	#end
+
+	# wait for threads
+	threads.each {|t| t.join}
+
+	# finish =)
+	bar.finish
+end
+
+
