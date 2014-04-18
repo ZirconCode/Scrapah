@@ -4,7 +4,11 @@ require 'json'
 
 module Scrapah
 
-	class Cache
+	class FileCache < Cache
+
+		# TODO use file_storage system?
+		# or simply use current storage system?
+		# can set which type of storage to use?
 
 		# TODO: 'throws away' whole cache after timeout, 
 		# 	    -> treat entries as seperate objects/files/dates

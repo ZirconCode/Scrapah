@@ -17,6 +17,8 @@ module Scrapah
 	require 'scrapah/gateway_command.rb'
 	# TODO fix gateway structure...
 
+	# TODO folders=seperate namespaces?
+
 end
 
 
