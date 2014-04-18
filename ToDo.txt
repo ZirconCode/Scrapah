@@ -1,8 +1,0 @@
-
-
-!!! Needs a Restructuring (create framework)
-- ! improve the caching
-- Optional Requires (ex. watir-webdriver for some)
-- proxy support
-- recursive-autodiscovery, proxy-switching, and other 'patterns'
-

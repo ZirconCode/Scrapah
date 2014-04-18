@@ -5,9 +5,10 @@
 
 module Scrapah
 
-	class Gateway_Command < Gateway
+	class CurlGateway < Gateway
 
 		def initialize
+			# TODO switch to open4
 			@cmd = 'curl "{{url}}"'
 		end
 

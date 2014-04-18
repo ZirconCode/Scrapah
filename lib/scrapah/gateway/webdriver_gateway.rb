@@ -6,7 +6,7 @@ require 'headless' # needs xvfb installed
 
 module Scrapah
 
-	class Gateway_Webdriver < Gateway
+	class WebdriverGateway < Gateway
 
 
 		def start

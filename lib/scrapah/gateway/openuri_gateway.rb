@@ -5,7 +5,7 @@ require 'open-uri'
 
 module Scrapah
 
-	class Gateway_Openuri < Gateway
+	class OpenuriGateway < Gateway
 
 		def get(url)
 			open(url)
