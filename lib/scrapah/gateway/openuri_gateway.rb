@@ -5,9 +5,10 @@ module Scrapah
 	class OpenuriGateway < Gateway
 
 		# TODO arguments & meta-data (agents...)
+		# proxies, timeouts...
 
 		def get(url)
-			open(url)
+			f = open(url).read
 		end
 
 	end

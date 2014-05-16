@@ -3,7 +3,7 @@
 # Test cache.rb
 
 require 'test/unit'
-require '../lib/scrapah/cache'
+require '../lib/scrapah/cache/cache'
 
 
 class TestCache < Test::Unit::TestCase

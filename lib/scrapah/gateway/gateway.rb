@@ -7,11 +7,13 @@ module Scrapah
 		def self.create(name)
 			case name
 			when :openuri
-				return Gateway_Openuri.new
+				return OpenuriGateway.new
 			when :webdriver
-				return Gateway_Webdriver.new
-			when :command
-				return Gateway_Command.new	
+				return WebdriverGateway.new
+			when :curl
+				return CurlGateway.new
+			else
+				raise 'Gateway Type does not Exist: '+name.to_s	
 			end
 		end
 

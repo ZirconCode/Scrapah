@@ -2,17 +2,16 @@
 
 # Test scraper.rb
 
-
 require 'test/unit'
 require '../lib/scrapah/scraper'
-require '../lib/scrapah/extract' # for test_process
+require '../lib/scrapah/helpers/extract' # for test_process
 
 # !TODO
 #require '../lib/scrapah'
-require '../lib/scrapah/gateway'
-require '../lib/scrapah/gateway_openuri'
-require '../lib/scrapah/gateway_webdriver'
-require '../lib/scrapah/gateway_command'
+require '../lib/scrapah/gateway/gateway'
+require '../lib/scrapah/gateway/openuri_gateway'
+require '../lib/scrapah/gateway/webdriver_gateway'
+require '../lib/scrapah/gateway/curl_gateway'
 
 
 class TestScraper < Test::Unit::TestCase

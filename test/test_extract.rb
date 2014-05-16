@@ -3,7 +3,7 @@
 # Test extract.rb
 
 require 'test/unit'
-require '../lib/scrapah/extract'
+require '../lib/scrapah/helpers/extract'
 
 
 class TestExtract < Test::Unit::TestCase
