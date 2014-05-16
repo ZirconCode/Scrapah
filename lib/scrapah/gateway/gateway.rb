@@ -1,5 +1,3 @@
-
-
 module Scrapah
 
 	# Gateway to Internet
@@ -8,27 +6,30 @@ module Scrapah
 
 		def self.create(name)
 			case name
-			when "openuri"
+			when :openuri
 				return Gateway_Openuri.new
-			when "webdriver"
+			when :webdriver
 				return Gateway_Webdriver.new
-			when "command" 
+			when :command
 				return Gateway_Command.new	
 			end
 		end
 
 		def initialize
-			#start
+			
 		end
 
+		# starts all ressources required by gateway
 		def start
 			true
 		end
 
+		# stops all ressources required by gateway
 		def stop
 			true
 		end
 
+		# returns raw web-content
 		def get(url)
 			""
 		end
@@ -36,4 +37,3 @@ module Scrapah
 	end
 
 end
-

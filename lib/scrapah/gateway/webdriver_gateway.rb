@@ -1,15 +1,12 @@
-
-
 require 'watir-webdriver'
 require 'headless' # needs xvfb installed
-
 
 module Scrapah
 
 	class WebdriverGateway < Gateway
 
-
 		def start
+			# TODO arguments & meta-data (agents...)
 			@invisible = false
 
 			if(@invisible)
@@ -39,7 +36,7 @@ module Scrapah
 
 			def started_headless?()
 					if @browser.nil? || (@headless.nil? && @invisible)
-						raise 'Call Scraper.start first when using :headless' 
+						raise 'Call #start first when using :headless' 
 						return false
 					end
 					return true
